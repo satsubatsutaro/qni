@@ -4,9 +4,10 @@ import {attr, controller, target, targets} from '@github/catalyst'
 import {html, render} from '@github/jtml'
 import tippy, {Instance as TippyInstance, ReferenceElement as TippyReferenceElement, roundArrow} from 'tippy.js'
 import {forceSigned} from './util'
+import {ControllableMixin} from './mixin/controllable'
 
 export class BlochDisplayElement extends MenuableMixin(
-  HelpableMixin(DraggableMixin(ActivateableMixin(HoverableMixin(HTMLElement))))
+  HelpableMixin(ControllableMixin(DraggableMixin(ActivateableMixin(HoverableMixin(HTMLElement)))))
 ) {
   @target body!: HTMLElement
   @target vectorLine!: HTMLElement
@@ -26,13 +27,25 @@ export class BlochDisplayElement extends MenuableMixin(
     this.showInspector()
   }
 
+  private destroyMenu(): void {
+    this.menu.destroy()
+  }
+
   private showInspector(): void {
     Util.notNull(this.parentElement)
 
     if (this.parentElement.tagName === 'PALETTE-DROPZONE') return
 
     const popupInstance = (this as TippyReferenceElement)._tippy
-    if (popupInstance) popupInstance.destroy()
+    if (popupInstance) {
+      const inspector = popupInstance.popper.querySelector('div.bloch-display__inspector')
+      const deleteMenuItem = popupInstance.popper.querySelector('[data-operation-menu-delete]')
+      if(inspector) {
+        popupInstance.destroy()
+      } else if (deleteMenuItem) {
+        deleteMenuItem.addEventListener('mousedown', this.destroyMenu.bind(this))
+      }
+    }
 
     const content = this.blochInspectorPopupContent()
     const popup = tippy(this as Element, {

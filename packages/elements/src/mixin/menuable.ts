@@ -25,9 +25,6 @@ export function MenuableMixin<TBase extends Constructor<HTMLElement>>(Base: TBas
     private deleteTooltip!: TippyInstance | undefined
 
     initMenu(): void {
-      const popupInstance = (this as TippyReferenceElement)._tippy
-      if (popupInstance) return
-
       if (this.menuContent === null) return
 
       this.addEventListener('click', this.dispatchShowMenuEvent)
