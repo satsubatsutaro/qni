@@ -6,7 +6,7 @@ import tippy, {Instance as TippyInstance, ReferenceElement as TippyReferenceElem
 import {forceSigned} from './util'
 
 export class BlochDisplayElement extends MenuableMixin(
-  ControllableMixin(HelpableMixin(DraggableMixin(ActivateableMixin(HoverableMixin(HTMLElement)))))
+  HelpableMixin(DraggableMixin(ActivateableMixin(HoverableMixin(HTMLElement))))
 ) {
   @target body!: HTMLElement
   @target vectorLine!: HTMLElement
@@ -262,8 +262,8 @@ export class BlochDisplayElement extends MenuableMixin(
       this.vector.style.transform = `rotateY(${this.phi}deg) rotateX(${-this.theta}deg)`
     }
 
-    //const popupInstance = (this as TippyReferenceElement)._tippy
-    //popupInstance?.setContent(this.blochInspectorPopupContent())
+    const popupInstance = (this as TippyReferenceElement)._tippy
+    popupInstance?.setContent(this.blochInspectorPopupContent())
   }
 
   private get d(): number {
